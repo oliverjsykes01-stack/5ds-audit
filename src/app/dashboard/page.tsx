@@ -3,11 +3,17 @@ import { getSupabaseClient } from '@/lib/supabaseClient'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 export default async function DashboardPage() {
 	const supabase = getSupabaseClient()
-	const { data: audits, error } = await supabase
-		.from('audits')
-		.select('id, name, created_at')
-		.order('created_at', { ascending: false })
-		.limit(10)
+	let audits: any[] | null = null
+	let error: { message: string } | null = null
+	if (supabase) {
+		const res = await supabase
+			.from('audits')
+			.select('id, name, created_at')
+			.order('created_at', { ascending: false })
+			.limit(10)
+		audits = res.data
+		error = res.error
+	}
 
 	return (
 		<main className="min-h-screen p-8">
