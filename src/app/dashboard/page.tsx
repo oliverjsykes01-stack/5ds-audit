@@ -1,3 +1,4 @@
+import Link from 'next/link'
 export default function DashboardPage() {
 	return (
 		<main className="min-h-screen p-8">
@@ -23,7 +24,7 @@ export default function DashboardPage() {
 						<h2 className="font-semibold">Links</h2>
 						<ul className="mt-2 space-y-1 text-sm">
 							<li>
-								<a className="text-blue-600 underline" href="/">Home</a>
+								<Link className="text-blue-600 underline" href="/">Home</Link>
 							</li>
 						</ul>
 					</div>
