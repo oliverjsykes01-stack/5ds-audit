@@ -1,5 +1,14 @@
 import Link from 'next/link'
-export default function DashboardPage() {
+import { getSupabaseClient } from '@/lib/supabaseClient'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+export default async function DashboardPage() {
+	const supabase = getSupabaseClient()
+	const { data: audits, error } = await supabase
+		.from('audits')
+		.select('id, name, created_at')
+		.order('created_at', { ascending: false })
+		.limit(10)
+
 	return (
 		<main className="min-h-screen p-8">
 			<div className="mx-auto max-w-5xl space-y-6">
@@ -28,6 +37,27 @@ export default function DashboardPage() {
 							</li>
 						</ul>
 					</div>
+					<Card className="sm:col-span-2 lg:col-span-3">
+						<CardHeader>
+							<CardTitle>Recent Audits</CardTitle>
+						</CardHeader>
+						<CardContent>
+							{error ? (
+								<p className="text-sm text-red-600">Failed to load audits: {error.message}</p>
+							) : audits && audits.length > 0 ? (
+								<ul className="space-y-2">
+									{audits.map((a: any) => (
+										<li key={a.id} className="flex items-center justify-between rounded border p-2 text-sm">
+											<span className="font-medium">{a.name ?? `Audit ${a.id}`}</span>
+											<span className="text-gray-500">{new Date(a.created_at).toLocaleString()}</span>
+										</li>
+									))}
+								</ul>
+							) : (
+								<p className="text-sm text-gray-600">No audits found. Create some rows in the 'audits' table.</p>
+							)}
+						</CardContent>
+					</Card>
 				</section>
 			</div>
 		</main>
